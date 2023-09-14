@@ -1,25 +1,17 @@
-
-
-@if($country_filter == true) 
-<h4>{{ head($countries) }} @if(count($cities) == 1) - {{ head($cities) }} @endif</h4>
-<a class="btn btn-danger" href="{{ url('referrals/') }}">Remove filters</a>
-@endif
-@if(count($cities) > 1)
-	<label for="city">Cities</label>
-	<select id="city">
-			<option value="">All</option>
-		@foreach ($cities as $city)
-		    <option value="{{ $city }}">{{ $city  }}</p>
-		@endforeach
-	</select>
-	<button class="btn btn-primary" id="filter">Filter</button>
-@elseif(count($countries) > 1) 
-<label for="country">Countries</label>
-<select id="country">
-		<option value="">All</option>
-	@foreach ($countries as $country)
-	    <option value="{{ $country }}">{{ $country  }}</p>
-	@endforeach
-</select>	
-<button class="btn btn-primary" id="filter">Filter</button>
-@endif
+<form class="row" method="get" action="{{route('referral.index')}}">
+    <div class="col-12 col-md-8">
+        <input type="search"
+               class="form-control rounded col pull-left"
+               placeholder="Search by any field"
+               aria-label="Search"
+               name="search"
+               value="{{request()->query('search')}}"
+        />
+    </div>
+    <div class="col-1 col-md-1">
+        <button type="submit" class="btn btn-outline-primary pull-right bg-info ">Search</button>
+    </div>
+    <div class="col-1 col-md-1">
+        <a type="button" class="btn btn-outline-primary pull-right bg-danger text-danger" href="{{route('referral.index')}}">Clear</a>
+    </div>
+</form>

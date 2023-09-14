@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreReferralRequest;
 use App\Referral;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 class ReferralController extends Controller
 {
+    const PAGINATION = 10;
     public function __construct() {
         $this->middleware('auth');
     }
@@ -17,31 +19,30 @@ class ReferralController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($country=null, $city=null)
+    public function index(Request $request)
     {
 
-        $countries = array();
-        $cities = array();
-        $country_filter = false;
-        //
-        if($country == null) { 
-            $referrals = Referral::paginate(15);
-            $countries = Referral::getCountries();
+        $search = $request->query('search');
+        $referrals = Referral::all();
+
+        if(!empty($search)) {
+            $referrals = $referrals->filter(function($record) use ($search){
+                if($record->isMatch($search)) return $record;
+            });
         }
-        elseif($city == null) {
-            $country_filter = true;
-            $referrals = Referral::where("country", $country)->paginate(15);
-            $countries = array($country);
-            $cities = Referral::getCities($country);
-        }
-        else {
-            $country_filter = true;
-            $referrals = Referral::where("country", $country)->where("city", $city)->paginate(15);
-            $countries = array($country);
-            $cities = array($city);
-        }
-        
-        return view('referrals.index', compact('referrals', 'countries', 'cities'))->with('country_filter', $country_filter);
+
+
+        $count = count($referrals);
+        $page = (request('page'))?:1;
+        $offset = self::PAGINATION * ($page - 1);
+        $paginator = new LengthAwarePaginator($referrals->slice($offset,self::PAGINATION),$count,self::PAGINATION,$page,[
+            'path'  => $request->url(),
+            'query' => $request->query(),
+        ]);
+        $referrals = $paginator;
+
+
+        return view('referrals.index')->with('referrals', $referrals);
     }
 
     /**

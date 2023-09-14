@@ -29,7 +29,7 @@ Route::get('posts/{post}', 'PostsController@show');
 Route::get('referrals/upload', 'ReferralController@upload');
 Route::post('referrals/upload', 'ReferralController@processUpload');
 Route::get('referrals/create', 'ReferralController@create')->name('add-referral');
-Route::get('referrals/{country?}/{city?}', 'ReferralController@index');
+Route::get('referrals', 'ReferralController@index')->name('referral.index');
 Route::post('referrals', 'ReferralController@store');
 
 //Logged in Users
