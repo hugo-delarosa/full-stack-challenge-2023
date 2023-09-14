@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReferralRequest;
 use App\Referral;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +19,6 @@ class ReferralController extends Controller
      */
     public function index($country=null, $city=null)
     {
-        // echo $country; 
 
         $countries = array();
         $cities = array();
@@ -61,36 +61,9 @@ class ReferralController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreReferralRequest $request)
     {
-        //
-        $this->validate(request(), [
-                'reference_no' => 'required',
-                'organisation' => 'required',
-                'province' => 'required',
-                'district' => 'required',
-                'provider_name' => 'required',
-                'phone' => 'required'
-            ]);
-        //
-        Referral::create([
-                "reference_no" => request("reference_no"),
-                "organisation" => request("organisation"),
-                "province" => request("province"),
-                "district" => request("district"),
-                "city" => request("city"),
-                "street_addr" => request("street_addr"),
-                "country" => request("country"),
-                "email" => request("email"),
-                "website" => request("website"),
-                "zipcode" => request("zipcode"),
-                "facility_type" => request("facility_type"),
-                "gps_location" => request("gps_location"),
-                "position" => request("position"),
-                "provider_name" => request("provider_name"),
-                "phone" => request("phone")
-            ]);
-
+        Referral::create($request->all());
         return redirect('referrals');
     }
 
@@ -144,60 +117,34 @@ class ReferralController extends Controller
     }
 
     public function processUpload(Request $request) {
-        $cols = array('country',
-            'reference_no',
-'organisation',
-'province',
-'district',
-'city',
-'street_address',
-'gps_location',
-'facility_name',
-'facility_type',
-'provider_name',
-'position',
-'phone',
-'email',
-'website',
-'pills_available',
-'code_to_use',
-'type_of_service',
-'note',
-'womens_evaluation');
+        $columns =  new Referral;
+        $succeed = 0;
+        $failed = $record = [];
+
         if ($request->file('referral_file')->isValid()) {
-            // echo $request->referral_file->extension();
-            // echo "<hr />";
-            // echo $request->referral_file->path();
             if($request->referral_file->extension() == "txt") {
+
                 $file = fopen($request->referral_file->path(), "r");
-                $all_data = array();
-                $ctr = 0;
-                $failed = array();
                 while (($data = fgetcsv($file, 200, ",")) !==FALSE ) {
-                    // print_r($cols); 
-                    // print_r($data);
-                    if(count($cols) == count($data)) {
-                        $arr = array_combine($cols, $data);
-                        Referral::create($arr);    
-                        $ctr++;
+                    if(count($columns->getFillable()) == count($data)) {
+                        $record = array_combine($columns->getFillable(), $data);
+                        Referral::create($record);
+                        $succeed++;
                     }
                     else {
-                        $failed[] = $data[1];
-                        Log::critical("Failed - data c = " . count($data).  " field c = " . count($cols) . " => ".implode(',', $data));
+                        $failed[] = $data[0];
+                        Log::critical("Failed - data c = " . count($data).  " field c = " . count($columns->getFillable()) . " => ".implode(',', $data));
                     }
-                    // print_r($arr);
+                }
 
-                    // break;
-                    // echo "<hr />";
-                    // $ctr++;
-                    $request->session()->flash('status', $ctr . ' records uploaded successful!');
-                    if(count($failed)>0) {
-                        $request->session()->flash('error', "Reference Nos. " . implode(',', $failed) . ' failed to upload!');    
-                    }
-                    
+                if(count($failed)>0) {
+                    $request->session()->flash('error', "Reference Nos. " . implode(',', $failed) . ' failed to upload!');
+                } else {
+                    $request->session()->flash('status', $succeed . ' records uploaded successful!');
                 }
             }
         }
+
         return redirect('referrals');
     }
 }

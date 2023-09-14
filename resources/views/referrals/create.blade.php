@@ -42,8 +42,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="street_addr" >Address : </label>
-                            <textarea id="street_addr" name="street_addr" class="form-control" placeholder="Address..."></textarea>
+                            <label for="street_address" >Address : </label>
+                            <textarea id="street_address" name="street_address" class="form-control" placeholder="Address..."></textarea>
                         </div>
                         
                         <div class="form-group">
