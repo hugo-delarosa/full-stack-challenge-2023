@@ -32,6 +32,7 @@ Route::get('referrals/create', 'ReferralController@create')->name('add-referral'
 Route::get('referrals', 'ReferralController@index')->name('referral.index');
 Route::get('referrals/{referral}', 'ReferralController@show')->name('referral.show');
 Route::post('referrals', 'ReferralController@store');
+Route::post('referrals/{referral}/comment', 'ReferralController@saveComment')->name('referral.comment');
 
 //Logged in Users
 Route::get('my-posts', 'AuthorsController@posts')->name('my-posts');

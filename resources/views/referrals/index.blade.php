@@ -22,6 +22,17 @@
 
     <hr>
 
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="row gx-5 gy-5">
             @foreach($referrals as $referral)
             <div class="col-md-4">
@@ -74,7 +85,6 @@
 
                         <p class="border-top border-2">
                             <h4>Note</h4>
-                        <p>
                             {{ $referral->note }}
                         </p>
 

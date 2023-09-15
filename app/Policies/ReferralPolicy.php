@@ -66,6 +66,15 @@ class ReferralPolicy
         return false;
     }
 
+    public function createComment(User $user, Referral $referral)
+    {
+        foreach($user->permissions as $permission) {
+            if(decrypt($permission->slug) == 'create-comment') return true;
+        }
+
+        return false;
+    }
+
     /**
      * Determine whether the user can update the referral.
      *

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
+use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\StoreReferralRequest;
 use App\Referral;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ReferralController extends Controller
@@ -155,5 +158,19 @@ class ReferralController extends Controller
         }
 
         return redirect('referrals');
+    }
+
+    public function saveComment(StoreCommentRequest $request, Referral $referral)
+    {
+        $this->authorize('createComment', Referral::class);
+        $comment =  Comment::create(
+            [
+                'text' => $request->get('comment'),
+                'referral_id' => $referral->id,
+                'user_id' => Auth::user()->id,
+            ]
+        );
+
+        return redirect(route('referral.show', $referral->id));
     }
 }

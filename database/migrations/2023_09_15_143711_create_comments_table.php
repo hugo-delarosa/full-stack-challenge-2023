@@ -21,6 +21,11 @@ class CreateCommentsTable extends Migration
                 ->references('id')
                 ->on('referrals')
                 ->onDelete('cascade');
+            $table->integer('user_id')
+                ->unsigned()
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
