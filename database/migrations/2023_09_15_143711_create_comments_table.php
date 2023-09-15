@@ -16,6 +16,11 @@ class CreateCommentsTable extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
             $table->text('text');
+            $table->integer('referral_id')
+                ->unsigned()
+                ->references('id')
+                ->on('referrals')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class ReferralController extends Controller
 {
-    const PAGINATION = 10;
+    const PAGINATION = 6;
     public function __construct() {
         $this->middleware('auth');
     }
@@ -54,6 +54,7 @@ class ReferralController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Referral::class);
         return view('referrals.create');
     }
 
@@ -74,11 +75,12 @@ class ReferralController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Referral  $referral
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function show(Referral $referral)
     {
-        //
+        $this->authorize('index', $referral);
+        return view('referrals.show')->with('referral', $referral);
     }
 
     /**
@@ -89,7 +91,7 @@ class ReferralController extends Controller
      */
     public function edit(Referral $referral)
     {
-        //
+        $this->authorize('update', $referral);
     }
 
     /**
@@ -101,7 +103,7 @@ class ReferralController extends Controller
      */
     public function update(Request $request, Referral $referral)
     {
-        //
+        $this->authorize('update', $referral);
     }
 
     /**
@@ -112,7 +114,7 @@ class ReferralController extends Controller
      */
     public function destroy(Referral $referral)
     {
-        //
+        $this->authorize('delete', $referral);
     }
 
     public function upload()

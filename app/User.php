@@ -27,6 +27,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function posts() {
+        return $this->hasMany(Post::class);
+    }
+
     public function roles()
     {
         return $this->belongsToMany('App\Role');
@@ -43,6 +47,4 @@ class User extends Authenticatable
             ->select('permissions.name','permissions.slug', 'permissions.description')
             ->get();
     }
-
-
 }

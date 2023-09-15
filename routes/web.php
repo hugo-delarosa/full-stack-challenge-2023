@@ -30,6 +30,7 @@ Route::get('referrals/upload', 'ReferralController@upload');
 Route::post('referrals/upload', 'ReferralController@processUpload');
 Route::get('referrals/create', 'ReferralController@create')->name('add-referral');
 Route::get('referrals', 'ReferralController@index')->name('referral.index');
+Route::get('referrals/{referral}', 'ReferralController@show')->name('referral.show');
 Route::post('referrals', 'ReferralController@store');
 
 //Logged in Users

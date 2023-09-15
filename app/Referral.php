@@ -77,4 +77,9 @@ class Referral extends Model
         'womens_evaluation',
     ];
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }
