@@ -17,10 +17,11 @@ class ReferralController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\View\View
      */
     public function index(Request $request)
     {
+        $this->authorize('index', Referral::class);
 
         $search = $request->query('search');
         $referrals = Referral::all();
@@ -28,6 +29,7 @@ class ReferralController extends Controller
         if(!empty($search)) {
             $referrals = $referrals->filter(function($record) use ($search){
                 if($record->isMatch($search)) return $record;
+                return false;
             });
         }
 
@@ -48,11 +50,10 @@ class ReferralController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function create()
     {
-        //
         return view('referrals.create');
     }
 
@@ -60,10 +61,11 @@ class ReferralController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(StoreReferralRequest $request)
     {
+        $this->authorize('create', Referral::class);
         Referral::create($request->all());
         return redirect('referrals');
     }
@@ -113,11 +115,15 @@ class ReferralController extends Controller
         //
     }
 
-    public function upload() {
+    public function upload()
+    {
+        $this->authorize('bulkCreate', Referral::class);
         return view('referrals.upload');
     }
 
-    public function processUpload(Request $request) {
+    public function processUpload(Request $request)
+    {
+        $this->authorize('bulkCreate', Referral::class);
         $columns =  new Referral;
         $succeed = 0;
         $failed = $record = [];

@@ -52,9 +52,11 @@
 
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="{{ route('add-referral') }}">
-                                            Add Referral
-                                        </a>
+                                        @can('create', App\Referral::class)
+                                            <a href="{{ route('add-referral') }}">
+                                                Add Referral
+                                            </a>
+                                        @endcan
                                         <a href="{{ route('logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

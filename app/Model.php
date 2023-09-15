@@ -8,4 +8,5 @@ class Model extends Eloquent
 {
     //
     protected $guarded = [];
+
 }

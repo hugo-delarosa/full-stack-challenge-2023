@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\App; @endphp
 @extends('layouts.app')
 
 @section('content')
@@ -11,7 +12,9 @@
 
                     <div class="row">
                         <div class="col-12 col-md-8">@include('partials.filterReferrals')</div>
-                        <div class="col-6 col-md-4">@include('partials.createReferralButton')</div>
+                        @can('bulkCreate', 'App\Referral')
+                            <div class="col-6 col-md-4">@include('partials.createReferralButton')</div>
+                        @endcan
                     </div>
 
                     <br>
